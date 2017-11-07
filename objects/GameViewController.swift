@@ -1,8 +1,8 @@
 //
 //  GameViewController.swift
-//  objects
+//  many things
 //
-//  Created by Diego E Gonzalez on 11/7/17.
+//  Created by Diego E Gonzalez on 11/6/17.
 //  Copyright © 2017 Diego E Gonzalez. All rights reserved.
 //
 
@@ -10,12 +10,15 @@ import SceneKit
 import QuartzCore
 
 class GameViewController: NSViewController {
+    var scene: SCNScene!
+    
+    var materials: [SCNMaterial]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // create a new scene
-        let scene = SCNScene(named: "art.scnassets/ship.scn")!
+        scene = SCNScene(named: "art.scnassets/ship.scn")!
         
         // create and add a camera to the scene
         let cameraNode = SCNNode()
@@ -41,7 +44,10 @@ class GameViewController: NSViewController {
         
         // retrieve the ship node
         let ship = scene.rootNode.childNode(withName: "ship", recursively: true)!
-        
+        let mat = SCNMaterial();
+        mat.diffuse.contents = NSColor.blue
+        mat.isLitPerPixel = false;
+        ship.geometry?.materials = [mat]
         // animate the 3d object
         ship.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: 2, z: 0, duration: 1)))
         
@@ -59,47 +65,56 @@ class GameViewController: NSViewController {
         
         // configure the view
         scnView.backgroundColor = NSColor.black
-        
-        // Add a click gesture recognizer
-        let clickGesture = NSClickGestureRecognizer(target: self, action: #selector(handleClick(_:)))
-        var gestureRecognizers = scnView.gestureRecognizers
-        gestureRecognizers.insert(clickGesture, at: 0)
-        scnView.gestureRecognizers = gestureRecognizers
+        manythings()
     }
     
-    @objc
-    func handleClick(_ gestureRecognizer: NSGestureRecognizer) {
-        // retrieve the SCNView
-        let scnView = self.view as! SCNView
-        
-        // check what nodes are clicked
-        let p = gestureRecognizer.location(in: scnView)
-        let hitResults = scnView.hitTest(p, options: [:])
-        // check that we clicked on at least one object
-        if hitResults.count > 0 {
-            // retrieved the first clicked object
-            let result = hitResults[0]
-            
-            // get its material
-            let material = result.node.geometry!.firstMaterial!
-            
-            // highlight it
-            SCNTransaction.begin()
-            SCNTransaction.animationDuration = 0.5
-            
-            // on completion - unhighlight
-            SCNTransaction.completionBlock = {
-                SCNTransaction.begin()
-                SCNTransaction.animationDuration = 0.5
-                
-                material.emission.contents = NSColor.black
-                
-                SCNTransaction.commit()
+    func manythings(){
+        for index in 1...9{
+            switch index {
+            case 1:
+                let obj = planet(size: 1.516, nickname: "mercury")
+                obj.position.x = CGFloat(index * 100);
+                scene.rootNode.addChildNode(obj)
+            case 2:
+                let obj = planet(size: 3.760, nickname: "venus")
+                obj.position.x = CGFloat(index * 100);
+                scene.rootNode.addChildNode(obj)
+            case 3:
+                let obj = planet(size: 3.959, nickname: "earth")
+                obj.position.x = CGFloat(index * 100);
+                scene.rootNode.addChildNode(obj)
+            case 4:
+                let obj = planet(size: 2.106, nickname: "mars")
+                obj.position.x = CGFloat(index * 100);
+                scene.rootNode.addChildNode(obj)
+            case 5:
+                let obj = planet(size: 43.441, nickname: "jupiter")
+                obj.position.x = CGFloat(index * 100);
+                scene.rootNode.addChildNode(obj)
+            case 6:
+                let obj = planet(size: 36.184, nickname: "saturn")
+                obj.position.x = CGFloat(index * 100);
+                scene.rootNode.addChildNode(obj)
+            case 7:
+                let obj = planet(size: 15.759, nickname: "uranus")
+                obj.position.x = CGFloat(index * 100);
+                scene.rootNode.addChildNode(obj)
+            case 8:
+                let obj = planet(size: 15.299, nickname: "neptune")
+                obj.position.x = CGFloat(index * 100);
+                scene.rootNode.addChildNode(obj)
+            case 9:
+                let obj = planet(size: 0.7376, nickname: "pluto")
+                obj.position.x = CGFloat(index * 100);
+                scene.rootNode.addChildNode(obj)
+            default:
+                let obj = planet()
+                obj.position.x = CGFloat(index * 100);
+                scene.rootNode.addChildNode(obj)
             }
-            
-            material.emission.contents = NSColor.red
-            
-            SCNTransaction.commit()
         }
     }
+    
+    
 }
+
